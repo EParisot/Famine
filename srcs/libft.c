@@ -1,7 +1,6 @@
 #include "../includes/famine.h"
 
-size_t	ft_strlen(const char *s)
-{
+size_t	ft_strlen(const char *s) {
 	unsigned int i;
 
 	i = 0;
@@ -10,8 +9,7 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
-void	ft_bzero(void *s, size_t n)
-{
+void	ft_bzero(void *s, size_t n) {
 	unsigned int	i;
 	char			*tmp;
 
@@ -24,8 +22,7 @@ void	ft_bzero(void *s, size_t n)
 	}
 }
 
-int	ft_strcmp(const char *s1, const char *s2)
-{
+int	ft_strcmp(const char *s1, const char *s2) {
 	int				i;
 
 	i = 0;
@@ -38,8 +35,7 @@ int	ft_strcmp(const char *s1, const char *s2)
 	return (0);
 }
 
-char *ft_strcpy(char *dest, const char *src)
-{
+char *ft_strcpy(char *dest, const char *src) {
 	int i;
 
 	i = 0;
@@ -52,8 +48,7 @@ char *ft_strcpy(char *dest, const char *src)
 	return (dest);
 }
 
-char *ft_strcat(char *dest, const char *src)
-{
+char *ft_strcat(char *dest, const char *src) {
 	int i;
 	int j;
 
@@ -71,8 +66,7 @@ char *ft_strcat(char *dest, const char *src)
 	return (dest);
 }
 
-void	*ft_memmove(void *dest, const void *src, size_t n)
-{
+void	*ft_memmove(void *dest, const void *src, size_t n) {
 	char			*str1;
 	char			*str2;
 
@@ -98,8 +92,7 @@ void	*ft_memmove(void *dest, const void *src, size_t n)
 	return (dest);
 }
 
-void	*ft_memset(void *s, int c, size_t n)
-{
+void	*ft_memset(void *s, int c, size_t n) {
 	unsigned int	i;
 	char			*str;
 

