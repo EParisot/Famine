@@ -122,6 +122,9 @@ int main(void) {
 		"pop %rdx \n"
 		"pop %rcx \n"
 		"pop %rax \n"
+		// set return here for fist call, will be replaced by NOP for subsequent runs
+		"leave \n" 
+		"ret \n"
 		// jump back to main
 		"jmp . + 5 + 0x42424242 \n"
 	);

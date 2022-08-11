@@ -18,8 +18,10 @@ static int replace_addr(t_env *env, unsigned int needle, unsigned int replace, i
 				if (offset == 1) // take current position in account
 					replace -= (i * 8 + j); // replace should be negative
 				*(unsigned int *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) = replace;
+				// replace "leave ret" : c9c3 by NOP to slide to jmp
+				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) - 2) = 0x90;
+				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) - 3) = 0x90;
 				break;
-
 			}
 		}
 	}
