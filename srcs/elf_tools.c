@@ -17,7 +17,7 @@ static int replace_addr(t_env *env, unsigned int needle, unsigned int replace, i
 			if (found) {
 				if (offset == 1) // take current position in account
 					replace -= (i * 8 + j); // replace should be negative
-				*(unsigned int *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j + 5]) = replace - 5;
+				*(unsigned int *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j] + 5) = replace - 5;
 				// replace push 0x42424242
 				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) - 3) = 0x90;
 				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) - 2) = 0x90;
@@ -27,8 +27,8 @@ static int replace_addr(t_env *env, unsigned int needle, unsigned int replace, i
 				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) + 2) = 0x90;
 				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) + 3) = 0x90;
 				// replace "leave ret" : c9c3 by NOP to slide to jmp with replaced address
-				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) - 4) = 0x90;
 				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) - 5) = 0x90;
+				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) - 4) = 0x90;
 				break;
 			}
 		}

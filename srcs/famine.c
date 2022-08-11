@@ -130,7 +130,7 @@ int main(void) {
 		"ret \n"
 		// jump back to main
 		"push 0x42424242 \n"
-		"jmp . + 5 + 0x41414141 \n"
+		"jmp . + 5 + 0x42424242 \n"
 	);
 
 	return 0;
