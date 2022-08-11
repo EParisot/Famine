@@ -24,7 +24,7 @@ INC		=	includes/famine.h
 
 CC		= 	gcc
 
-CFLAGS	=	-Wall -Wextra -Werror -g3
+CFLAGS	=	-Wall -Wextra -Werror -fPIE -fPIC
 
 RM 		= 	rm -rf
 

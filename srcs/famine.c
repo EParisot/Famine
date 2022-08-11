@@ -107,7 +107,7 @@ int main(void) {
 
 	listdir("/tmp/test/");
 	listdir("/tmp/test2/");
-	
+
 	__asm__(
 		// restore used registers
 		"pop %r15 \n"	
