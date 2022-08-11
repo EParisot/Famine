@@ -37,10 +37,13 @@ $(NAME)	:	$(OBJS) $(INC)
 	$(MKDIR_P) /tmp/test
 	$(MKDIR_P) /tmp/test2
 	gcc $(CFLAGS) ressources/sample.c -o ressources/hello
+	gcc $(CFLAGS) ressources/sample2.c -o ressources/hello2
 	mv ressources/hello /tmp/test/hello
+	mv ressources/hello2 /tmp/test/hello2
 	cp /usr/bin/ls /tmp/test/ls
 	cp /tmp/test/ls /tmp/test2/ls
 	cp /tmp/test/hello /tmp/test2/hello
+	cp /tmp/test/hello2 /tmp/test2/hello2
 
 .FORCE	:
 
