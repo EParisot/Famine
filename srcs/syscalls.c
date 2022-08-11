@@ -24,13 +24,26 @@ int syscall_write(unsigned fd, const char *buf, unsigned count) {
 	return ret;
 }
 
-int syscall_open(const char *pathname, int flags) {
+int syscall_open_2(const char *pathname, int flags) {
 	unsigned ret;
 
 	asm volatile(
 		"syscall"
 		: "=a"(ret)
 		: "a"(SYSCALL_OPEN), "D"(pathname), "S"(flags)
+		: "r11", "memory"
+	);
+
+	return ret;
+}
+
+int syscall_open_3(const char *pathname, int flags, mode_t mode) {
+	unsigned ret;
+
+	asm volatile(
+		"syscall"
+		: "=a"(ret)
+		: "a"(SYSCALL_OPEN), "D"(pathname), "S"(flags), "d"(mode)
 		: "r11", "memory"
 	);
 
