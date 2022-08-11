@@ -18,7 +18,7 @@ static int replace_addr(t_env *env, unsigned int needle, unsigned int replace, i
 				if (offset == 1) // take current position in account
 					replace -= (i * 8 + j); // replace should be negative
 				*(unsigned int *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) = replace;
-				// replace "leave ret" : c9c3 by NOP to slide to jmp
+				// replace "leave ret" : c9c3 by NOP to slide to jmp with replaced address
 				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) - 2) = 0x90;
 				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) - 3) = 0x90;
 				break;
@@ -175,7 +175,6 @@ static int get_payload(t_env *env) {
 	ft_bzero(env->payload_content, env->payload_size + 16);
 	((char*)env->payload_content)[0] = 0xe9;
 	main_offset += 16 - 5;
-	//printf("%lx, %p %p %p\n", main_offset, &__executable_start, &main, &_end);
 	unsigned char lsb = (unsigned)main_offset & 0xff; // mask the lower 8 bits
 	unsigned char msb = (unsigned)main_offset >> 8;   // shift the higher 8 bits
 	((char*)env->payload_content)[2] = msb;
