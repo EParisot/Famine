@@ -51,7 +51,7 @@ extern char _end;
 int main(void);
 int read_obj(t_env *env);
 int dump_obj(t_env *env);
-int check_corruption(void *obj, size_t size, char *obj_name);
+int check_corruption(void *obj, size_t size);
 void debug_dump(t_env *env, unsigned int *content, unsigned int start_addr, size_t size);
 
 size_t ft_strlen(const char *s);
