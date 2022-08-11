@@ -8,6 +8,7 @@
 # include <string.h>
 # include <fcntl.h>
 # include <sys/mman.h>
+# include <sys/types.h>
 # include <elf.h>
 # include <sys/stat.h>
 
@@ -60,8 +61,14 @@ char *ft_strcat(char *dest, const char *src);
 
 
 int syscall_write(unsigned fd, const char *buf, unsigned count);
+int syscall_open(const char *pathname, int flags);
 int syscall_openat(int dirfd, const char *pathname, int flags);
 int syscall_getdents(unsigned fd, const struct dirent *buf, unsigned count);
+int syscall_fstat(int fd, struct stat *buf);
+__uid_t syscall_getuid();
+__gid_t syscall_getgid();
+void *syscall_mmap(unsigned long addr, unsigned long len, unsigned long prot, unsigned long flags, unsigned long fd, unsigned long off);
+int syscall_munmap(void *addr, size_t len);
 void syscall_close(unsigned int fd);
 
 #endif

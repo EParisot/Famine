@@ -54,6 +54,7 @@ int dump_obj(t_env *env)
 }
 
 int check_corruption(void *obj, size_t size, char *obj_name) {
+
 	if (((char*)obj)[0] != 0x7f || \
 		((char*)obj)[1] != 'E' || \
 		((char*)obj)[2] != 'L' || \

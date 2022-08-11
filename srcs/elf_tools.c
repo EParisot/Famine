@@ -224,32 +224,32 @@ int read_obj(t_env *env) {
 	int ret = 0;
 	struct stat	buf;
 
-	if ((fd = open(env->obj_name, O_RDONLY)) < 0) {
-		if (DEBUG) printf("Error: Can't open file %s \n", env->obj_name);
+	if ((fd = syscall_open(env->obj_name, O_RDONLY)) < 0) {
+		//if (DEBUG) printf("Error: Can't open file %s \n", env->obj_name);
 		return -1;
 	}
-	else if (fstat(fd, &buf) < 0) {
-		printf("Error: Fstat error\n");
+	else if (syscall_fstat(fd, &buf) < 0) {
+		//if (DEBUG) printf("Error: Fstat error\n");
 	}
 	else if ((buf.st_mode & S_IFMT) != S_IFREG && \
 		(buf.st_mode & S_IFMT) != S_IFLNK && (buf.st_mode & S_IFMT) != S_IFSOCK) {
-		if (DEBUG) printf("Error: File is not valid\n");
+		//if (DEBUG) printf("Error: File is not valid\n");
 	}
 	else if (buf.st_size <= 0) {
-		if (DEBUG) printf("Error: File is empty\n");
+		//if (DEBUG) printf("Error: File is empty\n");
 	}
-	else if ((buf.st_uid == getuid() && !(buf.st_mode & S_IXUSR)) || \
-		(buf.st_gid == getgid() && !(buf.st_mode & S_IXGRP)) || \
+	else if ((buf.st_uid == syscall_getuid() && !(buf.st_mode & S_IXUSR)) || \
+		(buf.st_gid == syscall_getgid() && !(buf.st_mode & S_IXGRP)) || \
 		!(buf.st_mode & S_IXOTH)) {
-		if (DEBUG) printf("Error: User do not have exec permissions on target\n");
+		//if (DEBUG) printf("Error: User do not have exec permissions on target\n");
 	}
-	else if ((obj = mmap(0, buf.st_size, PROT_READ, MAP_PRIVATE, fd, 0)) == MAP_FAILED) {
-		if (DEBUG) printf("Error mapping file %s \n", env->obj_name);
-		close(fd);
+	else if ((obj = syscall_mmap(0, buf.st_size, PROT_READ, MAP_PRIVATE, fd, 0)) == MAP_FAILED) {
+		//if (DEBUG) printf("Error mapping file %s \n", env->obj_name);
+		syscall_close(fd);
 		return -1;
 	}
 	else {
-		close(fd);
+		syscall_close(fd);
 		if (check_corruption(obj, buf.st_size, env->obj_name) == 0) {
 			env->obj = obj;
 			env->obj_size = buf.st_size;
@@ -262,10 +262,11 @@ int read_obj(t_env *env) {
 		else {
 			ret = -1;
 		}
-		if (munmap(obj, buf.st_size) < 0) {
-			if (DEBUG) printf("Error munmap\n");
+		if (syscall_munmap(obj, buf.st_size) < 0) {
+			//if (DEBUG) printf("Error munmap\n");
 			ret = -1;
 		}
 	}
+
 	return ret;
 }

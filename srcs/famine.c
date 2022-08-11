@@ -9,34 +9,35 @@ void clear_env(t_env *env)
 	/*if (env->obj_name) {
 		free(env->obj_name);
 	}*/
-	free(env);
+	//free(env);
 }
 
+
+t_env env;
 t_env *set_env() {
-	t_env *env = NULL;
 	// create env
-	if ((env = (t_env *)malloc(sizeof(t_env))) == NULL) {
+	/*if ((env = (t_env *)malloc(sizeof(t_env))) == NULL) {
 		if (DEBUG) printf("Error: can't allocate memory.\n");
 		return NULL;
-	}
-	env->obj = NULL;
-	//env->obj_name = NULL;
-	env->obj_cpy = NULL;
-	env->obj_size = 0;
-	env->new_obj_size = 0;
-	env->obj_base = 0;
-	env->payload_file = NULL;
-	env->payload_content = NULL;
-	env->payload_size = 0;
-	env->load_align = 0;
-	env->entrypoint = 0;
-	env->plt_offset = 0;
-	env->found_code_cave = 0;
-	env->found_code_cave_id = 0;
-	env->inject_offset = 0;
-	env->inject_addr = 0;
+	}*/
+	env.obj = NULL;
+	//env.obj_name = NULL;
+	env.obj_cpy = NULL;
+	env.obj_size = 0;
+	env.new_obj_size = 0;
+	env.obj_base = 0;
+	env.payload_file = NULL;
+	env.payload_content = NULL;
+	env.payload_size = 0;
+	env.load_align = 0;
+	env.entrypoint = 0;
+	env.plt_offset = 0;
+	env.found_code_cave = 0;
+	env.found_code_cave_id = 0;
+	env.inject_offset = 0;
+	env.inject_addr = 0;
 
-	return env;
+	return &env;
 }
 
 
