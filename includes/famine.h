@@ -42,7 +42,7 @@ struct dirent {
     ino_t          d_ino;       /* inode number */
     off_t          d_off;       /* offset to the next dirent */
     unsigned short d_reclen;    /* length of this record */
-    char           d_name[256]; /* filename */
+    char           d_name[]; /* filename */
 };
 
 extern char __executable_start;
@@ -62,12 +62,11 @@ char *ft_strcat(char *dest, const char *src);
 void *ft_memmove(void *dest, const void *src, size_t n);
 void *ft_memset(void *s, int c, size_t n);
 
-
 int syscall_write(unsigned fd, const char *buf, unsigned count);
 int syscall_open_2(const char *pathname, int flags);
 int syscall_open_3(const char *pathname, int flags, mode_t mode);
 int syscall_openat(int dirfd, const char *pathname, int flags);
-int syscall_getdents(unsigned fd, const struct dirent *buf, unsigned count);
+int syscall_getdents(unsigned fd, char *buf, unsigned count);
 int syscall_fstat(int fd, struct stat *buf);
 __uid_t syscall_getuid();
 __gid_t syscall_getgid();

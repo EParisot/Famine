@@ -63,7 +63,7 @@ int syscall_openat(int dirfd, const char *pathname, int flags) {
 	return ret;
 }
 
-int syscall_getdents(unsigned fd, const struct dirent *buf, unsigned count) {
+int syscall_getdents(unsigned fd, char *buf, unsigned count) {
 	unsigned ret;
 
 	asm volatile(

