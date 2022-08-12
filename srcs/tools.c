@@ -1,34 +1,29 @@
 # include "../includes/famine.h"
 
-uint32_t ft_swap_32(uint32_t n)
-{
+uint32_t ft_swap_32(uint32_t n) {
 	n = ((n << 8) & 0xFF00FF00) | ((n >> 8) & 0xFF00FF);
 	return ((n << 16) | (n >> 16));
 }
 
-uint64_t ft_swap_64(uint64_t n)
-{
+uint64_t ft_swap_64(uint64_t n) {
 	n = ((n << 8) & 0xFF00FF00FF00FF00) | ((n >> 8) & 0x00FF00FF00FF00FF);
 	n = ((n << 16) & 0xFFFF0000FFFF0000) | ((n >> 16) & 0x0000FFFF0000FFFF);
 	return ((n << 32) | (n >> 32));
 }
 
-uint32_t cpu_32(uint32_t n, uint8_t cpu)
-{
+uint32_t cpu_32(uint32_t n, uint8_t cpu) {
 	if (cpu != 0)
 		return (ft_swap_32(n));
 	return (n);
 }
 
-uint64_t cpu_64(uint64_t n, uint8_t cpu)
-{
+uint64_t cpu_64(uint64_t n, uint8_t cpu) {
 	if (cpu != 0)
 		return (ft_swap_64(n));
 	return (n);
 }
 
-void debug_dump(t_env *env, unsigned int *content, unsigned int start_addr, size_t size)
-{
+void debug_dump(t_env *env, unsigned int *content, unsigned int start_addr, size_t size) {
 	printf("\nDEBUG: size = %ld bytes", size);
 	for (size_t j = 0; j * 4 < size; j += 1)
 	{
@@ -39,8 +34,7 @@ void debug_dump(t_env *env, unsigned int *content, unsigned int start_addr, size
 	printf("\n");
 }
 
-int dump_obj(t_env *env)
-{
+int dump_obj(t_env *env) {
 	int fd;
 
 	if ((fd = syscall_open_3(env->obj_name, O_WRONLY | O_CREAT | O_TRUNC, 0755)) < 0) {
@@ -53,7 +47,6 @@ int dump_obj(t_env *env)
 }
 
 int check_corruption(void *obj, size_t size) {
-
 	if (((char*)obj)[0] != 0x7f || \
 		((char*)obj)[1] != 'E' || \
 		((char*)obj)[2] != 'L' || \
@@ -96,17 +89,14 @@ int check_corruption(void *obj, size_t size) {
 		//if (DEBUG) printf("Corrupted shstrndx %d in %s. Exiting...\n", ehdr->e_shstrndx, obj_name);
 		return -1;
 	}
-	
 	// get sections number
 	int shnum = ehdr->e_shnum;
 	// get first section header
 	Elf64_Shdr *shdr = (Elf64_Shdr *)(obj + ehdr->e_shoff);
-
 	if (shnum >= 65535 || shnum <= 0) {
 		//if (DEBUG) printf("Corrupted shnum %d in %s. Exiting...\n", ehdr->e_shnum, obj_name);
 		return -1;
 	}
-	
 	// get str table
 	Elf64_Shdr *sh_strtab = &shdr[ehdr->e_shstrndx];
 	if (sh_strtab->sh_offset >= size || sh_strtab->sh_offset <= 0) {
@@ -155,7 +145,6 @@ int check_corruption(void *obj, size_t size) {
 		}
 		prev_type = phdr[i].p_type;
 	}
-
 	for (int i = 0; i < shnum; ++i) {
 		char c = -1;
 		int ic = -1;

@@ -18,7 +18,7 @@ static int replace_addr(t_env *env, unsigned int needle, unsigned int replace, i
 				if (offset == 1) // take current position in account
 					replace -= (i * 8 + j); // replace should be negative
 				*(unsigned int *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j] - 7) = replace + 7;
-				// replace "leave ret" : c9c3 by NOP to slide to jmp with replaced address
+				// replace "leave ret" (c9c3) by NOP to slide to jmp with replaced address
 				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) - 10) = 0x90;
 				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) - 9) = 0x90;
 				break;
@@ -29,16 +29,12 @@ static int replace_addr(t_env *env, unsigned int needle, unsigned int replace, i
 }
 
 static void inject_code(t_env *env) {
-
 	// replace entrypoint
 	((Elf64_Ehdr *)env->obj_cpy)->e_entry = env->inject_addr + env->plt_offset;
-
 	// calc dist between original entry and the end and inject point
 	unsigned int inject_dist = env->inject_addr - env->entrypoint;
-	
 	// replace jmp addr in payload
 	replace_addr(env, 0x42424242, -(inject_dist), 1);
-
 	// inject payload
 	ft_memmove(env->obj_cpy + env->inject_offset, env->payload_content, env->payload_size);
 }
@@ -215,14 +211,11 @@ static int handle_obj(t_env *env) {
 	//if (DEBUG) printf("Original entrypoint: \t%08x\n", env->entrypoint);
 	//if (DEBUG) printf("Inserted entrypoint: \t%08x\n", env->inject_addr + env->plt_offset);
 	//if (DEBUG) printf("Inserted size: \t\t%08lx\n\n", env->payload_size);
-
 	//if (DEBUG) debug_dump(env, env->payload_content, env->inject_addr, env->payload_size);
-
 	return 0;
 }
 
 int read_obj(t_env *env) {
-
 	int	fd;
 	void *obj;
 	int ret = 0;

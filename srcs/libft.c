@@ -15,8 +15,7 @@ void	ft_bzero(void *s, size_t n) {
 
 	i = 0;
 	tmp = (char *)s;
-	while (i < n)
-	{
+	while (i < n) {
 		tmp[i] = '\0';
 		i++;
 	}
@@ -26,10 +25,10 @@ int	ft_strcmp(const char *s1, const char *s2) {
 	int				i;
 
 	i = 0;
-	while (s1[i] || s2[i])
-	{
-		if (s1[i] != s2[i])
+	while (s1[i] || s2[i]) {
+		if (s1[i] != s2[i]) {
 			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+		}
 		i++;
 	}
 	return (0);
@@ -39,8 +38,7 @@ char *ft_strcpy(char *dest, const char *src) {
 	int i;
 
 	i = 0;
-	while (src[i])
-	{
+	while (src[i]) {
 		dest[i] = src[i];
 		i++;
 	}
@@ -54,10 +52,10 @@ char *ft_strcat(char *dest, const char *src) {
 
 	i = 0;
 	j = 0;
-	while (dest[i])
+	while (dest[i]) {
 		i++;
-	while (src[j])
-	{
+	}
+	while (src[j]) {
 		dest[i] = src[j];
 		i++;
 		j++;
@@ -72,19 +70,18 @@ void	*ft_memmove(void *dest, const void *src, size_t n) {
 
 	str1 = (char *)dest;
 	str2 = (char *)src;
-	if (n == 0)
+	if (n == 0) {
 		return (dest);
-	if (str2 < str1)
-	{
+	}
+	if (str2 < str1) {
 		str1 = str1 + n - 1;
 		str2 = str2 + n - 1;
-		while (n-- > 0)
+		while (n-- > 0) {
 			*str1-- = *str2--;
+		}
 	}
-	else
-	{
-		while (n > 0)
-		{
+	else {
+		while (n > 0) {
 			*str1++ = *str2++;
 			n--;
 		}
@@ -97,11 +94,11 @@ void	*ft_memset(void *s, int c, size_t n) {
 	char			*str;
 
 	i = 0;
-	if (n == 0)
+	if (n == 0) {
 		return (s);
+	}
 	str = (char *)s;
-	while (i < n)
-	{
+	while (i < n) {
 		str[i] = (char)c;
 		i++;
 	}

