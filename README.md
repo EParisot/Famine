@@ -1,6 +1,6 @@
 # Famine
-Famine is an ELF64 program capable to infect other ELF64 programs (located in specified folders), in Linux.
-Famine in writen in C language with some inline ASM for syscalls
+Famine is an ELF64 program able to infect other ELF64 programs (located in specified folders), in Linux.
+Famine in writen in C language with some inline ASM syscalls.
 
 ## Method:
 ### 1. Targets Localisation
