@@ -13,7 +13,7 @@
 # include <sys/stat.h>
 # include <sys/syscall.h> 
 
-#define DEBUG 1
+#define DEBUG 0
 
 typedef struct s_env {
 	
@@ -51,7 +51,7 @@ int main(void);
 int read_obj(t_env *env);
 int dump_obj(t_env *env);
 int check_corruption(void *obj, size_t size);
-void debug_dump(t_env *env, unsigned int *content, unsigned int start_addr, size_t size);
+//void debug_dump(t_env *env, unsigned int *content, unsigned int start_addr, size_t size);
 
 size_t ft_strlen(const char *s);
 void ft_bzero(void *s, size_t n);

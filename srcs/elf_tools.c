@@ -66,15 +66,15 @@ static void find_injection_point(t_env *env) {
 			env->load_align = phdr[i].p_align;
 			load_found = 1;
 		}
-		if (phdr[i+1].p_offset - (phdr[i].p_offset + phdr[i].p_memsz) > env->payload_size) {
-			//if (DEBUG) printf("Found code cave in PT_LOAD at %lx\n", phdr[i].p_offset);
+		if (load_found && phdr[i+1].p_offset - (phdr[i].p_offset + phdr[i].p_memsz) > env->payload_size) {
+			//if (DEBUG) printf("Found code cave in PT_LOAD at %lx\n", phdr[i].p_offset + phdr[i].p_memsz);
 			env->inject_offset = phdr[i].p_offset + phdr[i].p_memsz;
 			env->inject_addr = env->obj_base + env->inject_offset;
 			env->found_code_cave = 1;
 			env->found_code_cave_id = i;
 			break;
 		}
-		else {
+		else if (load_found) {
 			//if (DEBUG) printf("Not enought space in PT_LOAD, injecting after last section.\n");
 			// parse sections
 			for (int i = 0; i < shnum; i++) {
@@ -204,7 +204,7 @@ static int handle_obj(t_env *env) {
 	// inject and dump new obj
 	inject_code(env);
 	if (dump_obj(env)) {
-		if (DEBUG) printf("Error dumping new object.\n");
+		//if (DEBUG) printf("Error dumping new object.\n");
 		return -1;
 	}
 	// debug

@@ -23,7 +23,7 @@ uint64_t cpu_64(uint64_t n, uint8_t cpu) {
 	return (n);
 }
 
-void debug_dump(t_env *env, unsigned int *content, unsigned int start_addr, size_t size) {
+/*void debug_dump(t_env *env, unsigned int *content, unsigned int start_addr, size_t size) {
 	printf("\nDEBUG: size = %ld bytes", size);
 	for (size_t j = 0; j * 4 < size; j += 1)
 	{
@@ -32,7 +32,7 @@ void debug_dump(t_env *env, unsigned int *content, unsigned int start_addr, size
 		printf("%08x ", cpu_32(content[j], env->cpu));
 	}
 	printf("\n");
-}
+}*/
 
 int dump_obj(t_env *env) {
 	int fd;

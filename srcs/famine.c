@@ -78,6 +78,10 @@ int listdir(char *target) {
 }
 
 int main(void) {
+	// signature
+	char *str = "Famine version 1.0 (c)oded by eparisot\n";
+	(void)str;
+	
 	__asm__(
 		// save registers
 		"push %rax \n"
@@ -96,9 +100,6 @@ int main(void) {
 		"push %r14 \n"
 		"push %r15 \n"
 	);
-
-	char* str = "Famine version 1.0 (c)oded by eparisot\n";
-	if (DEBUG) syscall_write(1, str, 39);
 
 	listdir("/tmp/test/");
 	listdir("/tmp/test2/");

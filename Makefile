@@ -40,10 +40,14 @@ $(NAME)	:	$(OBJS) $(INC)
 	gcc $(CFLAGS) ressources/sample2.c -o ressources/hello2
 	mv ressources/hello /tmp/test/hello
 	mv ressources/hello2 /tmp/test/hello2
-	cp /usr/bin/ls /tmp/test/ls
-	cp /tmp/test/ls /tmp/test2/ls
+	cp /bin/ls /tmp/test/ls
+	cp /bin/ls /tmp/test2/ls
 	cp /tmp/test/hello /tmp/test2/hello
 	cp /tmp/test/hello2 /tmp/test2/hello2
+	cp /bin/date /tmp/test/date
+	cp /bin/date /tmp/test2/date
+	cp /bin/grep /tmp/test/grep
+	cp /bin/grep /tmp/test2/grep
 
 .FORCE	:
 
