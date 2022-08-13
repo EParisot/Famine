@@ -13,7 +13,7 @@
 # include <sys/stat.h>
 # include <sys/syscall.h> 
 
-#define DEBUG 1
+#define DEBUG 0
 
 typedef struct s_env {
 	
