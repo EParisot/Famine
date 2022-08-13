@@ -88,19 +88,3 @@ void	*ft_memmove(void *dest, const void *src, size_t n) {
 	}
 	return (dest);
 }
-
-void	*ft_memset(void *s, int c, size_t n) {
-	unsigned int	i;
-	char			*str;
-
-	i = 0;
-	if (n == 0) {
-		return (s);
-	}
-	str = (char *)s;
-	while (i < n) {
-		str[i] = (char)c;
-		i++;
-	}
-	return (s);
-}

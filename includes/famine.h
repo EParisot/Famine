@@ -13,7 +13,7 @@
 # include <sys/stat.h>
 # include <sys/syscall.h> 
 
-#define DEBUG 0
+#define DEBUG 1
 
 typedef struct s_env {
 	
@@ -59,7 +59,6 @@ int	ft_strcmp(const char *s1, const char *s2);
 char *ft_strcpy(char *dest, const char *src);
 char *ft_strcat(char *dest, const char *src);
 void *ft_memmove(void *dest, const void *src, size_t n);
-void *ft_memset(void *s, int c, size_t n);
 
 int syscall_write(unsigned fd, const char *buf, unsigned count);
 int syscall_open_2(const char *pathname, int flags);

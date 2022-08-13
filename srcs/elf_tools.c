@@ -197,7 +197,7 @@ static int handle_obj(t_env *env) {
 	if ((env->obj_cpy = syscall_mmap(0, env->new_obj_size + 1, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0)) == MAP_FAILED) {
 		return -1;
 	}
-	ft_memset(env->obj_cpy, 0, env->new_obj_size + 1);
+	ft_bzero(env->obj_cpy, env->new_obj_size + 1);
 	ft_memmove(env->obj_cpy, env->obj, env->obj_size);
 	// tweak target file's headers
 	tweak_elf(env);
