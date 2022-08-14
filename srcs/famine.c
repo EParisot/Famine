@@ -80,6 +80,7 @@ int listdir(char *target) {
 int main(void) {
 	__asm__(
 		// save registers
+		"push %rsp \n"
 		"push %rax \n"
 		"push %rcx \n"
 		"push %rdx \n"
@@ -122,6 +123,8 @@ int main(void) {
 		"pop %rdx \n"
 		"pop %rcx \n"
 		"pop %rax \n"
+		"pop %rsp \n"
+		"add $0x18, %rsp \n" // restore stack so argv is in correct place
 		// set return here for fist call to avoid segfault, will be replaced by NOP in subsequent runs
 		"leave \n" 
 		"ret \n"
