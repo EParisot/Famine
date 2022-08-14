@@ -56,7 +56,7 @@ strings /tmp/test2/ls | grep "eparisot"
 printf "\n${YELLOW}* infected hello2 infects fresh ls: ${NC}\n"
 cp /bin/ls /tmp/test2/ls
 /tmp/test/hello2
-/tmp/test2/ls
+/tmp/test2/ls -la /tmp
 strings /tmp/test2/ls | grep "eparisot"
 printf "\n${YELLOW}* infected hello infects fresh date: ${NC}\n"
 cp /bin/date /tmp/test2/date
