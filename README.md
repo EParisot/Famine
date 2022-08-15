@@ -2,6 +2,8 @@
 Famine is an ELF64 program able to infect other ELF64 programs (located in specified folders), in Linux.
 Famine in writen in C language with some inline ASM syscalls.
 
+Tested on Ubuntu 22.04 with gcc 11.2.0, ld 2.38
+
 ## Method:
 ### 1. Targets Localisation
 The program first looks for infectable programs in folders /tmp/test and /tmp/test2 (both built by Makefile).
@@ -22,6 +24,7 @@ As you may notice, this program is not writen in ASM as many other viruses, but 
 To bypass thoses limitations, we used only self writen utility functions (strcmp, memset, memmove, etc) and only system calls for the other functions such as mmap (to replace malloc, plus munmap as free), write, fstat, getdents, etc... 
 We used C/ASM inlines to call those function so no PLT is made by compiler, and the code remains as portable as if it was all writen in ASM...
 ref: https://stackoverflow.com/questions/9506353/how-to-invoke-a-system-call-via-syscall-or-sysenter-in-inline-assembly
+Another thing needed is to save registers ans stack pointer location (rsp) before the start on the injected code, and at the end, restore all these ones to let the program run normaly !
 ### 5. Schema :
 ```
 	Original Famine Program:
