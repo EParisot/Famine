@@ -156,7 +156,7 @@ static void tweak_elf(t_env *env) {
 
 static int get_payload(t_env *env) {
 	size_t main_offset = (char *)&main - &__executable_start;
-	env->payload_size = &_end - &__executable_start - 0x1000; // this seems magic... but it's mesured exactly to avoid strings being loaded twice...
+	env->payload_size = &_end - &__executable_start;// - 0x1000; // this seems magic... but it's mesured exactly to avoid strings being loaded twice...
 	// save payload in env
 	/*if ((env->payload_content = malloc(env->payload_size + 16)) == NULL) {
 		if (DEBUG) printf("DEBUG PAYLOAD: malloc failed\n");
