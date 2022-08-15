@@ -82,5 +82,5 @@ printf "\n${RED}All /bin/: ${NC}\n"
 cp /bin/* /tmp/test
 ./Famine
 for f in /test/* 
-do strings $f
+do strings $f | grep "eparisot"
 done
