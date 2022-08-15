@@ -88,7 +88,7 @@ printf "${RED}Running Famine...${NC}"
 printf "${RED}Done.${NC}\n"
 for f in /tmp/test/*
 do 
-	if [[ $(strings $f | grep "eparisot") ]]; then
+	if [[ $(strings $f | grep "eparisot") -ne 0 ]]; then
 		echo -n "."
 	else
 		printf "\n${RED} Failed injection on $f ${NC}\n"
