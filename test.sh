@@ -89,8 +89,9 @@ printf "${RED}Done.${NC}\n"
 for f in /tmp/test/*
 do 
 	if [[ "$(strings $f | grep eparisot)" ]]; then
-		echo -n "."
+		printf "${GREEN}.${NC}"
 	else
-		printf "\n${RED} Failed injection on $f ${NC}\n"
+		printf "${RED}.${NC}"
+		#printf "\n${RED} Failed injection on $f ${NC}\n"
 	fi
 done
