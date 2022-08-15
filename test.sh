@@ -68,3 +68,18 @@ cp /bin/grep /tmp/test2/grep
 /tmp/test/hello
 cat ressources/sample.c | /tmp/test2/grep 'int'
 strings /tmp/test2/hello | grep "eparisot"
+
+
+read -p "Run tests over all /bin/ ? " -n 1 -r
+echo    # (optional) move to a new line
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+    exit 1
+fi
+
+printf "\n${RED}All /bin/: ${NC}\n"
+cp /bin/* /tmp/test
+./Famine
+for f in /test/* 
+do strings $f
+done
