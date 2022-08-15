@@ -78,9 +78,12 @@ while true; do
     esac
 done
 
+
+echo ""
+
 printf "\n${RED}All /bin/: ${NC}\n"
 cp /bin/* /tmp/test
 ./Famine
-for f in /test/* 
+for f in /tmp/test/* 
 do strings $f | grep "eparisot"
 done
