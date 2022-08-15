@@ -98,8 +98,8 @@ do
 		printf "${GREEN}.${NC}"
 	else
 		printf "${RED}.${NC}"
-		printf "\n${RED} Failed injection on $f ${NC}\n"
-		break
+		#printf "\n${RED} Failed injection on $f ${NC}\n"
+		#break
 	fi
 done
 
