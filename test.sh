@@ -80,7 +80,6 @@ while true; do
     esac
 done
 
-
 printf "\n${RED}All /bin/: ${NC}\n"
 cp /bin/* /tmp/test
 printf "${RED}Running Famine...${NC}"
@@ -96,3 +95,5 @@ do
 		#break
 	fi
 done
+
+echo ""
