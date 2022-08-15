@@ -84,6 +84,10 @@ done
 printf "\n${RED}All /bin/: ${NC}\n"
 cp /bin/* /tmp/test
 ./Famine
-for f in /tmp/test/* 
-do strings $f | grep "eparisot"
+for f in /tmp/test/*
+do if [[ $(strings $f | grep "eparisot") ]]; then
+	;
+else
+	printf "\n${RED} Failed injection on $f ${NC}";
+fi
 done
