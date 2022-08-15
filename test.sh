@@ -72,7 +72,7 @@ strings /tmp/test2/hello | grep "eparisot"
 echo ""
 
 while true; do
-    read -p "Run tests over all /bin/ ?" yn
+    read -p "Run tests over all /bin/ ? (y/n): " yn
     case $yn in
         [Yy]* ) break;;
         [Nn]* ) exit;;
@@ -88,6 +88,7 @@ printf "${RED}Running Famine...${NC}"
 printf "${RED}Done.${NC}\n"
 for f in /tmp/test/*
 do 
+	printf "$f"
 	if [[ "$(strings $f | grep eparisot)" ]]; then
 		echo -n "."
 	else
