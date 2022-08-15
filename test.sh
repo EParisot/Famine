@@ -88,7 +88,6 @@ printf "${RED}Running Famine...${NC}"
 printf "${RED}Done.${NC}\n"
 for f in /tmp/test/*
 do 
-	printf "$f"
 	if [[ "$(strings $f | grep eparisot)" ]]; then
 		echo -n "."
 	else
