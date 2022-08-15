@@ -72,7 +72,7 @@ strings /tmp/test2/hello | grep "eparisot"
 while true; do
     read -p "Run tests over all /bin/ ?" yn
     case $yn in
-        [Yy]* ) make install; break;;
+        [Yy]* ) break;;
         [Nn]* ) exit;;
         * ) echo "Please answer yes or no.";;
     esac
