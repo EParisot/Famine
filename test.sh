@@ -69,13 +69,14 @@ cp /bin/grep /tmp/test2/grep
 cat ressources/sample.c | /tmp/test2/grep 'int'
 strings /tmp/test2/hello | grep "eparisot"
 
-
-read -p "Run tests over all /bin/ ? " -n 1 -r
-echo    # (optional) move to a new line
-if [[ ! $REPLY =~ ^[Yy]$ ]]
-then
-    exit 1
-fi
+while true; do
+    read -p "Run tests over all /bin/ ?" yn
+    case $yn in
+        [Yy]* ) make install; break;;
+        [Nn]* ) exit;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
 
 printf "\n${RED}All /bin/: ${NC}\n"
 cp /bin/* /tmp/test
