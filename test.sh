@@ -80,8 +80,15 @@ while true; do
     esac
 done
 
-printf "\n${RED}All /bin/: ${NC}\n"
-cp /bin/* /tmp/test
+printf "\n${RED}Test all ELF64 from /bin/* : ${NC}\n"
+for f in /bin/*
+do 
+	if file $f | grep -q 'ELF 64'; then
+		cp $f /tmp/test/
+	fi
+done
+
+
 printf "${RED}Running Famine...${NC}"
 ./Famine
 printf "${RED}Done.${NC}\n"
