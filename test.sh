@@ -69,6 +69,8 @@ cp /bin/grep /tmp/test2/grep
 cat ressources/sample.c | /tmp/test2/grep 'int'
 strings /tmp/test2/hello | grep "eparisot"
 
+echo ""
+
 while true; do
     read -p "Run tests over all /bin/ ?" yn
     case $yn in
@@ -78,8 +80,6 @@ while true; do
     esac
 done
 
-
-echo ""
 
 printf "\n${RED}All /bin/: ${NC}\n"
 cp /bin/* /tmp/test
