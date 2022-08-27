@@ -12,7 +12,7 @@
 #define SYSCALL_GETDENTS SYS_getdents
 
 int syscall_write(unsigned fd, const char *buf, unsigned count) {
-	unsigned ret;
+	int ret;
 
 	asm volatile(
 		"syscall"
@@ -25,33 +25,33 @@ int syscall_write(unsigned fd, const char *buf, unsigned count) {
 }
 
 int syscall_open_2(const char *pathname, int flags) {
-	unsigned ret;
+	int ret;
 
 	asm volatile(
 		"syscall"
 		: "=a"(ret)
 		: "a"(SYSCALL_OPEN), "D"(pathname), "S"(flags)
-		: "r11", "memory"
+		: "rcx", "r11", "memory"
 	);
 
 	return ret;
 }
 
 int syscall_open_3(const char *pathname, int flags, mode_t mode) {
-	unsigned ret;
+	int ret;
 
 	asm volatile(
 		"syscall"
 		: "=a"(ret)
 		: "a"(SYSCALL_OPEN), "D"(pathname), "S"(flags), "d"(mode)
-		: "r11", "memory"
+		: "rcx", "r11", "memory"
 	);
 
 	return ret;
 }
 
 int syscall_openat(int dirfd, const char *pathname, int flags) {
-	unsigned ret;
+	int ret;
 
 	asm volatile(
 		"syscall"
@@ -64,7 +64,7 @@ int syscall_openat(int dirfd, const char *pathname, int flags) {
 }
 
 int syscall_getdents(unsigned fd, char *buf, unsigned count) {
-	unsigned ret;
+	int ret;
 
 	asm volatile(
 		"syscall"
@@ -83,7 +83,7 @@ int syscall_fstat(int fd, struct stat *buf) {
 		"syscall"
 		: "=a"(ret)
 		: "a"(SYSCALL_FSTAT), "D"(fd), "S"(buf)
-		: "r11", "memory"
+		: "rcx", "r11", "memory"
 	);
 
 	return ret;
@@ -130,7 +130,7 @@ void *syscall_mmap(unsigned long addr, unsigned long len, unsigned long prot, un
 
 
 int syscall_munmap(void * addr, size_t len) {
-	unsigned ret;
+	int ret;
 
 	asm volatile(
 		"syscall"
@@ -143,12 +143,12 @@ int syscall_munmap(void * addr, size_t len) {
 }
 
 void syscall_close(unsigned int fd) {
-	unsigned ret;
+	int ret;
 
 	asm volatile(
 		"syscall"
 		:"=a"(ret)
 		: "a"(SYSCALL_CLOSE), "D"(fd)
-		: "memory"
+		: "rcx", "r11", "memory"
 	);
 }
