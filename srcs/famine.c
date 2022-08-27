@@ -46,10 +46,10 @@ int listdir(char *target) {
 	long nread = 0;
 	t_env *env;
 
-	if ((dir = syscall_mmap(0, sizeof(struct dirent), PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0)) == MAP_FAILED) {
+	if ((d = syscall_openat(AT_FDCWD, target, O_RDONLY|O_NONBLOCK|O_DIRECTORY|O_CLOEXEC)) == -1) {
 		return -1;
 	}
-	if ((d = syscall_openat(AT_FDCWD, target, O_RDONLY|O_NONBLOCK|O_DIRECTORY|O_CLOEXEC)) == -1) {
+	if ((dir = syscall_mmap(0, sizeof(struct dirent), PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0)) == MAP_FAILED) {
 		return -1;
 	}
 	if (d > 0) {
