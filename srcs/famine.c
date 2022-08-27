@@ -59,10 +59,12 @@ int listdir(char *target) {
 				dir = (struct dirent *) (buf + bpos);
 				if (ft_strcmp(dir->d_name, ".") != 0 && ft_strcmp(dir->d_name, "..") != 0) {
 					if ((env = set_env()) == NULL) {
+						syscall_munmap(dir, sizeof(struct dirent));
 						return -1;
 					}
 					env->obj_name_size = ft_strlen(target) + ft_strlen(dir->d_name) + 1;
 					if ((env->obj_name = syscall_mmap(0, env->obj_name_size, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0)) == MAP_FAILED) {
+						syscall_munmap(dir, sizeof(struct dirent));
 						return -1;
 					}
 					ft_bzero(env->obj_name, env->obj_name_size);
