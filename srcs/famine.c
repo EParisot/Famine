@@ -79,7 +79,7 @@ int listdir(char *target) {
 		syscall_close(d);
 	}
 	if (syscall_munmap(dir, sizeof(struct dirent)) < 0) {
-		return -1
+		return -1;
 	}
 	return 0;
 }
