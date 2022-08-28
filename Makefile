@@ -16,7 +16,8 @@ SRCS	=	srcs/famine.c \
 			srcs/elf_tools.c \
 			srcs/tools.c \
 			srcs/libft.c \
-			srcs/syscalls.c
+			srcs/syscalls.c \
+			srcs/encrypt.c
 
 OBJS	=	$(SRCS:.c=.o)
 
