@@ -285,10 +285,7 @@ int read_obj(t_env *env) {
 		else {
 			ret = -1;
 		}
-		if (syscall_munmap(obj, buf.st_size) < 0) {
-			//if (DEBUG) printf("Error munmap\n");
-			ret = -1;
-		}
+		syscall_munmap(obj, buf.st_size);
 	}
 	return ret;
 }
