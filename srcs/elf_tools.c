@@ -218,11 +218,11 @@ static int handle_obj(t_env *env) {
 	// tweak target file's headers
 	tweak_elf(env);
 	// generate Key
-	/*if (generate_key(env)) {
+	if (generate_key(env)) {
 		//if (DEBUG) printf("Error generating key.\n");
 		return -1;
-	}*/
-	ft_memmove(env->key, "aaaabbbbccccdddd\0", 17);
+	}
+	//ft_memmove(env->key, "aaaabbbbccccdddd\0", 17);
 	// inject and dump new obj
 	inject_code(env);
 	if (rabbit_encrypt(env)) { // ENCRYPT

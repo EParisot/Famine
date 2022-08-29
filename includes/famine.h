@@ -13,12 +13,12 @@
 # include <sys/stat.h>
 # include <sys/syscall.h> 
 
+#define DEBUG 0
+
 #define WORDSIZE 0x100000000
 #define LSW(n) (n << 8) >> 8
 #define MSW(n) (n >> 8) << 8
 #define FG(a, b) LSW(((a + b) % WORDSIZE) * ((a + b) % WORDSIZE)) ^ MSW(((a + b) % WORDSIZE) * ((a + b) % WORDSIZE))
-
-#define DEBUG 0
 
 typedef struct s_env {
 	
