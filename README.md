@@ -1,8 +1,8 @@
 # Famine
 Famine is an ELF64 program able to infect other ELF64 programs (located in specified folders), in Linux.
-Famine in writen in C language with some inline ASM syscalls.
+Famine is writen in C language with some inline ASM syscalls.
 
-Tested on Ubuntu 22.04 with gcc 11.2.0, ld 2.38
+Tested on WSL2 and Ubuntu 22.04 with gcc 11.2.0, ld 2.38
 
 ## Method:
 ### 1. Targets Localisation
