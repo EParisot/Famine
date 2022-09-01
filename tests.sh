@@ -10,7 +10,7 @@ NC='\033[0m' # No Color
 SIGN='Famine version 1.0 (c)oded by eparisot'
 
 function check() {
-	if strings $1 | grep "$SIGN"; then
+	if [[ '$(strings $1 | grep $SIGN)' ]]; then
 		printf "${GREEN}[OK]${NC}\n"
 	else
 		printf "${RED}[FAIL]${NC}\n"
