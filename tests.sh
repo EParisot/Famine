@@ -10,7 +10,7 @@ NC='\033[0m' # No Color
 SIGN='Famine version 1.0 (c)oded by eparisot'
 
 function check() {
-	if [[ '$(strings $1 | grep $SIGN)' ]]; then
+	if strings $1 | grep "$SIGN" > /dev/null; then
 		printf "${GREEN}[OK]${NC}\n"
 	else
 		printf "${RED}[FAIL]${NC}\n"
@@ -99,12 +99,12 @@ do
 done
 
 
-printf "${RED}Running Famine...${NC}"
+printf "Running Famine..."
 ./Famine
-printf "${RED}Done.${NC}\n"
+printf "Done.\n"
 for f in /tmp/test/*
 do 
-	if [[ '$(strings $f | grep $SIGN)' ]]; then
+	if strings $f | grep "$SIGN" > /dev/null; then
 		printf "${GREEN}.${NC}"
 	else
 		printf "${RED}.${NC}"
