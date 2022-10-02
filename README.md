@@ -38,7 +38,7 @@ __executable_start		main				_end			return back		dummy push
 	First Contamination:
 target program with replaced entry point and complete injection:
 					target main	   target end Famine start	Famine main		Famine end			return back		dummy push
-		|________________|____________________|JMP main_________|________________|0x90 0x90 _ jmp target main _ push 0x42424242|
+		|________________|____________________|JMP decrypt_________|________________|0x90 0x90 _ jmp target main _ push 0x42424242|
 						 |						1|---------------------------------->2a|---------->2b|
 						3|<------------------------------------------------------------|<------------|
 	
